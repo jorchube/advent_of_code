@@ -1,4 +1,6 @@
-from src.fifteen import parse_input, get_positions_without_beacon, get_positions_without_beacon_at_row
+import pytest
+
+from src.fifteen import parse_input, get_positions_without_beacon, get_positions_without_beacon_at_row, get_beacon_frequency
 
 def test_it_parses_a_sensor():
     input = """
@@ -28,6 +30,16 @@ Sensor at x=2357787, y=401688: closest beacon is at x=1686376, y=-104303
     assert sensors[1].y == 401688
     assert sensors[1].beacon.x == 1686376
     assert sensors[1].beacon.y == -104303
+
+@pytest.mark.parametrize(("input", "expected_perimeter"), [
+    ("Sensor at x=9, y=16: closest beacon is at x=8, y=16", [(8, 16), (9, 17), (10, 16), (9, 15)]),
+    ("Sensor at x=9, y=16: closest beacon is at x=8, y=17", [(7, 16), (9, 18), (11, 16), (9, 14)])
+])
+def test_it_returns_a_sensor_coverage_perimeter(input, expected_perimeter):
+    sensors = parse_input(input)
+    perimeter = sensors[0].get_covered_area_perimeter_vertices()
+
+    assert perimeter == expected_perimeter
 
 def test_it_returns_positions_not_containing_a_beacon_for_distance_1():
     input = """
@@ -79,6 +91,37 @@ Sensor at x=0, y=1: closest beacon is at x=-1, y=1
         (0, 2),
     }
 
+def test_returns_positions_not_containing_a_beacon_in_a_given_row_for_one_sensor():
+    input = """
+Sensor at x=13, y=2: closest beacon is at x=15, y=3
+"""
+
+    sensors = parse_input(input)
+    positions_without_beacon = get_positions_without_beacon_at_row(sensors, 1)
+
+    assert len(positions_without_beacon) == 5
+
+def test_returns_positions_not_containing_a_beacon_in_a_given_row_for_one_sensor_with_positions_occupied():
+    input = """
+Sensor at x=13, y=3: closest beacon is at x=15, y=3
+"""
+
+    sensors = parse_input(input)
+    positions_without_beacon = get_positions_without_beacon_at_row(sensors, 3)
+
+    assert len(positions_without_beacon) == 3
+
+def test_returns_positions_not_containing_a_beacon_in_a_given_row_for_many_sensors():
+    input = """
+Sensor at x=13, y=2: closest beacon is at x=15, y=3
+Sensor at x=20, y=1: closest beacon is at x=22, y=1
+"""
+
+    sensors = parse_input(input)
+    positions_without_beacon = get_positions_without_beacon_at_row(sensors, 1)
+
+    assert len(positions_without_beacon) == 8
+
 def test_returns_positions_not_containing_a_beacon_in_a_given_row():
     input = """
 Sensor at x=2, y=18: closest beacon is at x=-2, y=15
@@ -101,3 +144,26 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3
     positions_without_beacon = get_positions_without_beacon_at_row(sensors, 10)
 
     assert len(positions_without_beacon) == 26
+
+def test_get_frequency_for_beacon():
+    input = """
+Sensor at x=2, y=18: closest beacon is at x=-2, y=15
+Sensor at x=9, y=16: closest beacon is at x=10, y=16
+Sensor at x=13, y=2: closest beacon is at x=15, y=3
+Sensor at x=12, y=14: closest beacon is at x=10, y=16
+Sensor at x=10, y=20: closest beacon is at x=10, y=16
+Sensor at x=14, y=17: closest beacon is at x=10, y=16
+Sensor at x=8, y=7: closest beacon is at x=2, y=10
+Sensor at x=2, y=0: closest beacon is at x=2, y=10
+Sensor at x=0, y=11: closest beacon is at x=2, y=10
+Sensor at x=20, y=14: closest beacon is at x=25, y=17
+Sensor at x=17, y=20: closest beacon is at x=21, y=22
+Sensor at x=16, y=7: closest beacon is at x=15, y=3
+Sensor at x=14, y=3: closest beacon is at x=15, y=3
+Sensor at x=20, y=1: closest beacon is at x=15, y=3
+"""
+
+    sensors = parse_input(input)
+    frequency = get_beacon_frequency(sensors, 20, 20)
+
+    assert frequency == 56000011
