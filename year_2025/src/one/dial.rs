@@ -27,10 +27,10 @@ impl Dial {
         let new_position;
         match direction {
             RotationDirection::Clockwise => {
-                new_position = (self.current_position + clicks);
+                new_position = self.current_position + clicks;
             }
             RotationDirection::CounterClockwise => {
-                new_position = (self.current_position + 100 - (clicks));
+                new_position = self.current_position + 100 - (clicks);
             }
         }
 
