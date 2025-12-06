@@ -12,7 +12,8 @@ pub struct Rotation {
 
 impl Rotation {
     pub fn new(raw_data: &str) -> Self {
-        println!("Parsing rotation from raw data: {}", raw_data);
+        #[cfg(debug_assertions)]
+        dbg!("Parsing rotation from raw data: {}", raw_data);
 
         let (part0, part1) = raw_data.split_at(1);
         let direction = match part0 {

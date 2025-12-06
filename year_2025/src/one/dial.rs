@@ -14,14 +14,16 @@ impl Dial {
     }
 
     pub fn rotate(&mut self, rotation: Rotation) {
+        let raw = rotation.raw_data();
         let clicks = rotation.clicks() % 100;
         let direction = rotation.direction();
 
-        println!(
+        #[cfg(debug_assertions)]
+        dbg!(
             "rotation: {raw} -> {direction:?}, {clicks}",
-            raw = rotation.raw_data(),
-            direction = direction,
-            clicks = clicks
+            raw,
+            direction,
+            clicks
         );
 
         let new_position;
