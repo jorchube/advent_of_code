@@ -48,10 +48,6 @@ impl Dial {
         }
     }
 
-    pub fn current_position(&self) -> u32 {
-        self.current_position
-    }
-
     pub fn zero_count(&self) -> u32 {
         self.zero_count
     }
