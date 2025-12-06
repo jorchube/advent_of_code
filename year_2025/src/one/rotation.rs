@@ -1,11 +1,10 @@
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum RotationDirection {
     Clockwise,
     CounterClockwise,
 }
 
 pub struct Rotation {
-    raw_data: String,
     direction: RotationDirection,
     clicks: u32,
 }
@@ -13,7 +12,7 @@ pub struct Rotation {
 impl Rotation {
     pub fn new(raw_data: &str) -> Self {
         #[cfg(debug_assertions)]
-        dbg!("Parsing rotation from raw data: {}", raw_data);
+        dbg!(raw_data);
 
         let (part0, part1) = raw_data.split_at(1);
         let direction = match part0 {
@@ -23,15 +22,10 @@ impl Rotation {
         };
         let clicks = part1.parse::<u32>().expect("Invalid number of clicks");
 
-        Rotation {
-            raw_data: raw_data.to_string(),
-            direction,
-            clicks,
-        }
-    }
+        #[cfg(debug_assertions)]
+        dbg!(direction, clicks);
 
-    pub fn raw_data(&self) -> &str {
-        &self.raw_data
+        Rotation { direction, clicks }
     }
 
     pub fn clicks(&self) -> u32 {
