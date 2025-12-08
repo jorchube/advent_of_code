@@ -3,6 +3,7 @@ use super::rotation::{Rotation, RotationDirection};
 pub struct Dial {
     current_position: u32,
     zero_count: u32,
+    zero_passes: u32,
 }
 
 impl Dial {
@@ -10,6 +11,7 @@ impl Dial {
         Dial {
             current_position: starting_point,
             zero_count: 0,
+            zero_passes: 0,
         }
     }
 
@@ -42,7 +44,75 @@ impl Dial {
         }
     }
 
+    pub fn rotate_multiple_and_count_zero_passes(&mut self, rotations: Vec<Rotation>) {
+        for rotation in rotations {
+            let passes = self.count_zero_passes_brute(&rotation);
+            self.rotate(rotation);
+            self.zero_passes += passes;
+        }
+    }
+
+    pub fn count_zero_passes(&mut self, rotation: &Rotation) -> u32 {
+        let clicks = rotation.clicks();
+        let direction = rotation.direction();
+
+        let mut passes = clicks / 100;
+        let remainder = clicks % 100;
+
+        match direction {
+            RotationDirection::Clockwise => {
+                if remainder + self.current_position >= 100 {
+                    passes += 1;
+                }
+            }
+            RotationDirection::CounterClockwise => {
+                if self.current_position < remainder {
+                    passes += 1;
+                }
+            }
+        }
+
+        passes
+    }
+
+    pub fn count_zero_passes_brute(&mut self, rotation: &Rotation) -> u32 {
+        let clicks = rotation.clicks();
+        let direction = rotation.direction();
+
+        let mut passes = 0;
+        let mut position: i32 = self.current_position.try_into().unwrap();
+
+        match direction {
+            RotationDirection::Clockwise => {
+                for _ in 0..clicks {
+                    position = position + 1;
+                    if position == 100 {
+                        position = 0;
+                        passes += 1;
+                    }
+                }
+            }
+            RotationDirection::CounterClockwise => {
+                for _ in 0..clicks {
+                    position = position - 1;
+                    if position == 0 {
+                        passes += 1;
+                    }
+                    if position == -1 {
+                        position = 99;
+                    }
+                }
+            }
+        }
+
+        passes
+    }
+
     pub fn zero_count(&self) -> u32 {
         self.zero_count
+    }
+
+    pub fn zero_passes_count(&self) -> u32 {
+        self.zero_passes
     }
 }

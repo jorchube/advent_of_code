@@ -3,11 +3,20 @@ mod tests {
     use crate::one::solver::Solver;
 
     #[test]
-    fn example_input() {
+    fn example_input_base_problem() {
         let data = include_str!("example_input.txt");
 
-        let result = Solver::solve(data);
+        let result = Solver::solve_base(data);
 
         assert_eq!(result, 3);
+    }
+
+    #[test]
+    fn example_input_extra_problem() {
+        let data = include_str!("example_input.txt");
+
+        let result = Solver::solve_extra(data);
+
+        assert_eq!(result, 6);
     }
 }
