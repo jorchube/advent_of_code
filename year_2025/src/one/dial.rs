@@ -52,29 +52,6 @@ impl Dial {
         }
     }
 
-    pub fn count_zero_passes(&mut self, rotation: &Rotation) -> u32 {
-        let clicks = rotation.clicks();
-        let direction = rotation.direction();
-
-        let mut passes = clicks / 100;
-        let remainder = clicks % 100;
-
-        match direction {
-            RotationDirection::Clockwise => {
-                if remainder + self.current_position >= 100 {
-                    passes += 1;
-                }
-            }
-            RotationDirection::CounterClockwise => {
-                if self.current_position < remainder {
-                    passes += 1;
-                }
-            }
-        }
-
-        passes
-    }
-
     pub fn count_zero_passes_brute(&mut self, rotation: &Rotation) -> u32 {
         let clicks = rotation.clicks();
         let direction = rotation.direction();
