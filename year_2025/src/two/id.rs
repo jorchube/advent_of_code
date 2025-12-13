@@ -1,4 +1,3 @@
-
 #[derive(Debug, Clone)]
 pub struct Id {
     value: String,
@@ -44,6 +43,10 @@ impl Id {
 
     fn _is_valid_extra(&self) -> bool {
         let len = self.value.len();
+        if len == 1 {
+            return true;
+        }
+
         let divisors = self._divisors(len);
         #[cfg(debug_assertions)]
         println!("Divisors of {}: {:?}", len, &divisors);
