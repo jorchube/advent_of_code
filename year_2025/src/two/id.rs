@@ -18,6 +18,10 @@ impl Id {
         valid
     }
 
+    pub fn is_valid_extra(&self) -> bool {
+        true
+    }
+
     pub fn as_u64(&self) -> u64 {
         self.value.parse::<u64>().unwrap()
     }

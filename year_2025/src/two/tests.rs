@@ -11,12 +11,12 @@ mod tests {
         assert_eq!(result, 1227775554);
     }
 
-    // #[test]
-    // fn example_input_extra_problem() {
-    //     let data = include_str!("example_input.txt");
+    #[test]
+    fn example_input_extra_problem() {
+        let data = include_str!("example_input.txt");
 
-    //     let result = Solver::solve_extra(data);
+        let result = Solver::solve_extra(data);
 
-    //     assert_eq!(result, 8);
-    // }
+        assert_eq!(result, 4174379265);
+    }
 }
