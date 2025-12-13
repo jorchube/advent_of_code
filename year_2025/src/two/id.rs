@@ -18,8 +18,8 @@ impl Id {
         valid
     }
 
-    pub fn as_u32(&self) -> u32 {
-        self.value.parse::<u32>().unwrap()
+    pub fn as_u64(&self) -> u64 {
+        self.value.parse::<u64>().unwrap()
     }
 
     fn _is_valid(&self) -> bool {

@@ -12,8 +12,8 @@ impl IdRangesParser {
             .map(|raw_range| {
                 let bounds = raw_range
                     .split('-')
-                    .map(|bound| bound.parse::<u32>().unwrap())
-                    .collect::<Vec<u32>>();
+                    .map(|bound| bound.parse::<u64>().unwrap())
+                    .collect::<Vec<u64>>();
                 Range::new(bounds[0], bounds[1])
             })
             .collect::<Vec<Range>>();

@@ -2,17 +2,17 @@ use super::id::Id;
 
 #[derive(Debug, Clone)]
 pub struct Range {
-    start: u32,
-    end: u32,
+    start: u64,
+    end: u64,
 }
 
 impl Range {
-    pub fn new(start: u32, end: u32) -> Self {
+    pub fn new(start: u64, end: u64) -> Self {
         Range { start, end }
     }
 
     pub fn ids(&self) -> Vec<Id> {
-        let raw_ids = (self.start..=self.end).collect::<Vec<u32>>();
+        let raw_ids = (self.start..=self.end).collect::<Vec<u64>>();
         let ids = raw_ids
             .iter()
             .map(|raw_id| Id::new(raw_id.to_string()))
