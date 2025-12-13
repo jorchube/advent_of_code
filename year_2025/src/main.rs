@@ -10,4 +10,7 @@ fn main() {
 
     let two = two::solver::Solver::solve_base(include_str!("two/problem_input.txt"));
     println!("Two: {}", two);
+
+    let two_extra = two::solver::Solver::solve_extra(include_str!("two/problem_input.txt"));
+    println!("Two extra: {}", two_extra);
 }

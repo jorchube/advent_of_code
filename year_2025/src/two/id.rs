@@ -19,7 +19,11 @@ impl Id {
     }
 
     pub fn is_valid_extra(&self) -> bool {
-        true
+        let valid = self._is_valid_extra();
+        #[cfg(debug_assertions)]
+        println!("### {:?} {:?}", &self, valid);
+
+        valid
     }
 
     pub fn as_u64(&self) -> u64 {
@@ -37,5 +41,55 @@ impl Id {
         }
 
         true
+    }
+
+    fn _is_valid_extra(&self) -> bool {
+        let len = self.value.len();
+        let divisors = self._divisors(len);
+        #[cfg(debug_assertions)]
+        println!("Divisors of {}: {:?}", len, &divisors);
+
+        let is_valid = divisors
+            .iter()
+            .all(|divisor| self._is_valid_for_divisor(*divisor));
+
+        is_valid
+    }
+
+    fn _is_valid_for_divisor(&self, divisor: usize) -> bool {
+        let parts = self._split_into_parts(divisor);
+        if parts.windows(2).all(|w| w[0] == w[1]) {
+            return false;
+        }
+
+        true
+    }
+
+    fn _split_into_parts(&self, divisor: usize) -> Vec<&str> {
+        let mut parts = Vec::new();
+        let part_length = self.value.len() / divisor;
+        for i in 0..divisor {
+            let start = i * part_length;
+            let end = start + part_length;
+            parts.push(&self.value[start..end]);
+        }
+        #[cfg(debug_assertions)]
+        println!(
+            "Splitting {:?} with divisor {} into parts of length {}: {:?}",
+            &self, divisor, part_length, parts
+        );
+        parts
+    }
+
+    fn _divisors(&self, value: usize) -> Vec<usize> {
+        let mut divisors = Vec::new();
+        let half = value.div_ceil(2);
+        for i in 2..=half {
+            if value % i == 0 {
+                divisors.push(i);
+            }
+        }
+        divisors.push(value);
+        divisors
     }
 }
