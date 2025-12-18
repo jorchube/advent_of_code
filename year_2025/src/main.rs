@@ -1,4 +1,5 @@
 mod one;
+mod three;
 mod two;
 
 fn main() {
@@ -13,4 +14,7 @@ fn main() {
 
     let two_extra = two::solver::Solver::solve_extra(include_str!("two/problem_input.txt"));
     println!("Two extra: {}", two_extra);
+
+    let three = three::solver::Solver::solve_base(include_str!("three/problem_input.txt"));
+    println!("Three: {}", three);
 }
