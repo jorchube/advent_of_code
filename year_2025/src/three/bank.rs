@@ -1,30 +1,22 @@
 #[derive(Debug)]
 pub struct Bank {
-    batteries_raw: String,
     capacities: Vec<u32>,
 }
 
 impl Bank {
     pub fn new(batteries_raw: String) -> Self {
-        let capacities = Bank::capacities(&batteries_raw);
         Bank {
-            batteries_raw,
-            capacities,
+            capacities: Bank::capacities(&batteries_raw),
         }
     }
 
     pub fn get_biggest_joltage(&self) -> u32 {
-        let mut capacities = self.capacities.clone();
-
-        let tens_index = self.get_biggest_index(
-            &capacities.as_slice()[0..capacities.len() - 1].to_vec(),
-            None,
-        );
-        let tens = capacities[tens_index];
-        let units_index = self.get_biggest_index(&capacities, Some(tens_index));
-        let units = capacities[units_index];
-
+        let tens_index = self.get_biggest_index_skipping_last(&self.capacities);
+        let tens = self.capacities[tens_index];
+        let units_index = self.get_biggest_index_skipping_until(&self.capacities, tens_index);
+        let units = self.capacities[units_index];
         let joltage = tens * 10 + units;
+
         #[cfg(debug_assertions)]
         println!(
             "bank:{:?}, tens: {:?}, units: {:?}, joltage: {:?}",
@@ -32,6 +24,14 @@ impl Bank {
         );
 
         joltage
+    }
+
+    fn get_biggest_index_skipping_last(&self, capacities: &Vec<u32>) -> usize {
+        self.get_biggest_index(&capacities[0..capacities.len() - 1].to_vec(), None)
+    }
+
+    fn get_biggest_index_skipping_until(&self, capacities: &Vec<u32>, skip_until: usize) -> usize {
+        self.get_biggest_index(capacities, Some(skip_until))
     }
 
     fn get_biggest_index(&self, capacities: &Vec<u32>, skip_until: Option<usize>) -> usize {
