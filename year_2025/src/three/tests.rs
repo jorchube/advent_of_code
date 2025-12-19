@@ -8,7 +8,7 @@ mod tests {
 
         let result = Solver::solve_base(data);
 
-        assert_eq!(result, 357);
+        assert_eq!(result, "357");
     }
 
     // #[test]
