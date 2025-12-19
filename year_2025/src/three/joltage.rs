@@ -12,13 +12,6 @@ impl Joltage {
         Joltage { value }
     }
 
-    // pub fn from_batteries(tens: u32, units: u32) -> Self {
-    //     let joltage_value = tens * 10 + units;
-    //     Joltage {
-    //         value: BigUint::from(joltage_value),
-    //     }
-    // }
-
     pub fn from_batteries(batteries: Vec<u32>) -> Self {
         let mut joltage_value = 0;
         #[cfg(debug_assertions)]
