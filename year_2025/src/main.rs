@@ -17,4 +17,7 @@ fn main() {
 
     let three = three::solver::Solver::solve_base(include_str!("three/problem_input.txt"));
     println!("Three: {}", three);
+
+    let three_extra = three::solver::Solver::solve_extra(include_str!("three/problem_input.txt"));
+    println!("Three extra: {}", three_extra);
 }
