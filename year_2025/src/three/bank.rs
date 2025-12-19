@@ -13,11 +13,26 @@ impl Bank {
     }
 
     pub fn get_biggest_joltage(&self) -> Joltage {
-        let tens_index = self.get_biggest_index_skipping_last(&self.batteries);
+        let mut batteries: Vec<u32> = Vec::new();
+        let batteries_length = self.batteries.len();
+
+        let tens_index = self.get_biggest_battery_index_skipping_until_and_stopping_at(
+            &self.batteries,
+            None,
+            batteries_length - 1,
+        );
         let tens = self.batteries[tens_index];
-        let units_index = self.get_biggest_index_skipping_until(&self.batteries, tens_index);
+        batteries.insert(0, tens);
+
+        let units_index = self.get_biggest_battery_index_skipping_until_and_stopping_at(
+            &self.batteries,
+            Some(tens_index),
+            batteries_length,
+        );
         let units = self.batteries[units_index];
-        let joltage = Joltage::from_batteries(tens, units);
+        batteries.insert(0, units);
+
+        let joltage = Joltage::from_batteries(batteries);
 
         #[cfg(debug_assertions)]
         println!(
@@ -28,12 +43,13 @@ impl Bank {
         joltage
     }
 
-    fn get_biggest_index_skipping_last(&self, batteries: &Vec<u32>) -> usize {
-        self.get_biggest_index(&batteries[0..batteries.len() - 1].to_vec(), None)
-    }
-
-    fn get_biggest_index_skipping_until(&self, batteries: &Vec<u32>, skip_until: usize) -> usize {
-        self.get_biggest_index(batteries, Some(skip_until))
+    fn get_biggest_battery_index_skipping_until_and_stopping_at(
+        &self,
+        batteries: &Vec<u32>,
+        skip_until: Option<usize>,
+        stop_at: usize,
+    ) -> usize {
+        self.get_biggest_index(&batteries[0..stop_at].to_vec(), skip_until)
     }
 
     fn get_biggest_index(&self, batteries: &Vec<u32>, skip_until: Option<usize>) -> usize {
