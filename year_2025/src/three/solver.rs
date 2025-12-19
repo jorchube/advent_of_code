@@ -1,3 +1,5 @@
+use crate::three::joltage::Joltage;
+
 use super::banks_parser::BanksParser;
 
 pub struct Solver;
@@ -8,12 +10,12 @@ impl Solver {
         #[cfg(debug_assertions)]
         println!("{:?}", banks);
 
-        let batteries: Vec<u32> = banks
+        let joltages: Vec<Joltage> = banks
             .iter()
             .map(|bank| bank.get_biggest_joltage())
             .collect();
 
-        let total: u32 = batteries.iter().sum();
+        let total: Joltage = joltages.into_iter().sum();
 
         total.to_string()
     }

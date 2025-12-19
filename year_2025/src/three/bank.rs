@@ -1,43 +1,45 @@
+use crate::three::joltage::Joltage;
+
 #[derive(Debug)]
 pub struct Bank {
-    capacities: Vec<u32>,
+    batteries: Vec<u32>,
 }
 
 impl Bank {
     pub fn new(batteries_raw: String) -> Self {
         Bank {
-            capacities: Bank::capacities(&batteries_raw),
+            batteries: Bank::batteries(&batteries_raw),
         }
     }
 
-    pub fn get_biggest_joltage(&self) -> u32 {
-        let tens_index = self.get_biggest_index_skipping_last(&self.capacities);
-        let tens = self.capacities[tens_index];
-        let units_index = self.get_biggest_index_skipping_until(&self.capacities, tens_index);
-        let units = self.capacities[units_index];
-        let joltage = tens * 10 + units;
+    pub fn get_biggest_joltage(&self) -> Joltage {
+        let tens_index = self.get_biggest_index_skipping_last(&self.batteries);
+        let tens = self.batteries[tens_index];
+        let units_index = self.get_biggest_index_skipping_until(&self.batteries, tens_index);
+        let units = self.batteries[units_index];
+        let joltage = Joltage::from_batteries(tens, units);
 
         #[cfg(debug_assertions)]
         println!(
             "bank:{:?}, tens: {:?}, units: {:?}, joltage: {:?}",
-            self.capacities, tens, units, joltage
+            self.batteries, tens, units, joltage
         );
 
         joltage
     }
 
-    fn get_biggest_index_skipping_last(&self, capacities: &Vec<u32>) -> usize {
-        self.get_biggest_index(&capacities[0..capacities.len() - 1].to_vec(), None)
+    fn get_biggest_index_skipping_last(&self, batteries: &Vec<u32>) -> usize {
+        self.get_biggest_index(&batteries[0..batteries.len() - 1].to_vec(), None)
     }
 
-    fn get_biggest_index_skipping_until(&self, capacities: &Vec<u32>, skip_until: usize) -> usize {
-        self.get_biggest_index(capacities, Some(skip_until))
+    fn get_biggest_index_skipping_until(&self, batteries: &Vec<u32>, skip_until: usize) -> usize {
+        self.get_biggest_index(batteries, Some(skip_until))
     }
 
-    fn get_biggest_index(&self, capacities: &Vec<u32>, skip_until: Option<usize>) -> usize {
+    fn get_biggest_index(&self, batteries: &Vec<u32>, skip_until: Option<usize>) -> usize {
         let mut biggest_index: Option<usize> = None;
 
-        for index in 0..capacities.len() {
+        for index in 0..batteries.len() {
             if let Some(index_to_skip) = skip_until {
                 if index_to_skip >= index {
                     continue;
@@ -46,7 +48,7 @@ impl Bank {
             match biggest_index {
                 None => biggest_index = Some(index),
                 Some(current_biggest_index) => {
-                    if capacities[index] > capacities[current_biggest_index] {
+                    if batteries[index] > batteries[current_biggest_index] {
                         biggest_index = Some(index);
                     }
                 }
@@ -55,14 +57,14 @@ impl Bank {
 
         #[cfg(debug_assertions)]
         println!(
-            "get biggest_index -> capacities {:?}, index: {:?}",
-            capacities, biggest_index
+            "get biggest_index -> batteries {:?}, index: {:?}",
+            batteries, biggest_index
         );
 
         biggest_index.unwrap()
     }
 
-    fn capacities(batteries_raw: &String) -> Vec<u32> {
+    fn batteries(batteries_raw: &String) -> Vec<u32> {
         batteries_raw
             .as_str()
             .chars()
