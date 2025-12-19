@@ -12,7 +12,7 @@ impl Solver {
 
         let joltages: Vec<Joltage> = banks
             .iter()
-            .map(|bank| bank.get_biggest_joltage())
+            .map(|bank| bank.get_biggest_joltage_for_n_batteries(2))
             .collect();
 
         let total: Joltage = joltages.into_iter().sum();
@@ -20,7 +20,18 @@ impl Solver {
         total.to_string()
     }
 
-    pub fn solve_extra(input: &str) -> u32 {
-        0
+    pub fn solve_extra(input: &str) -> String {
+        let banks = BanksParser::parse(input.to_string());
+        #[cfg(debug_assertions)]
+        println!("{:?}", banks);
+
+        let joltages: Vec<Joltage> = banks
+            .iter()
+            .map(|bank| bank.get_biggest_joltage_for_n_batteries(12))
+            .collect();
+
+        let total: Joltage = joltages.into_iter().sum();
+
+        total.to_string()
     }
 }

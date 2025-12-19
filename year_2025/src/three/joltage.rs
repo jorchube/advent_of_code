@@ -26,7 +26,7 @@ impl Joltage {
         for (index, battery) in batteries.iter().enumerate() {
             #[cfg(debug_assertions)]
             println!("battery: {:?}, index: {:?}", battery, index);
-            joltage_value += battery * 10u32.pow(index as u32);
+            joltage_value += *battery as u64 * 10u64.pow(index as u32);
         }
 
         Joltage {

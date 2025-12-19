@@ -1,3 +1,5 @@
+use std::ops::Range;
+
 use crate::three::joltage::Joltage;
 
 #[derive(Debug)]
@@ -12,33 +14,29 @@ impl Bank {
         }
     }
 
-    pub fn get_biggest_joltage(&self) -> Joltage {
+    pub fn get_biggest_joltage_for_n_batteries(&self, n: usize) -> Joltage {
         let mut batteries: Vec<u32> = Vec::new();
         let batteries_length = self.batteries.len();
 
-        let tens_index = self.get_biggest_battery_index_skipping_until_and_stopping_at(
-            &self.batteries,
-            None,
-            batteries_length - 1,
-        );
-        let tens = self.batteries[tens_index];
-        batteries.insert(0, tens);
+        let mut previous_index: Option<usize> = None;
+        for i in (0..n).rev() {
+            let index = self.get_biggest_battery_index_skipping_until_and_stopping_at(
+                &self.batteries,
+                previous_index,
+                batteries_length - i,
+            );
+            previous_index = Some(index);
+            let battery = self.batteries[index];
+            batteries.insert(0, battery);
+        }
 
-        let units_index = self.get_biggest_battery_index_skipping_until_and_stopping_at(
-            &self.batteries,
-            Some(tens_index),
-            batteries_length,
-        );
-        let units = self.batteries[units_index];
-        batteries.insert(0, units);
+        #[cfg(debug_assertions)]
+        println!("bank:{:?}, chosen: {:?}", self.batteries, batteries);
 
         let joltage = Joltage::from_batteries(batteries);
 
         #[cfg(debug_assertions)]
-        println!(
-            "bank:{:?}, tens: {:?}, units: {:?}, joltage: {:?}",
-            self.batteries, tens, units, joltage
-        );
+        println!("joltage: {:?}", joltage);
 
         joltage
     }
